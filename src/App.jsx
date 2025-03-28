@@ -5,7 +5,6 @@ function App() {
 
   return (
     <div>
-      <h1>Queue Tracker</h1>
       <QueueForm/>
     </div>
   )

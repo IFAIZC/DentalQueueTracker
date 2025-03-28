@@ -1,46 +1,74 @@
-import { useState } from "react"
+import { useState } from "react";
 
+export default function App() {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [selection, setSelection] = useState("");
 
-export default function QueueForm() {
-
-  const [name, setName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [selection, setSelection] = useState("")
-
-  function submitName(e){
-    setName(e.target.value)
-  }
-  function submitPhone(e){
-    setPhone(e.target.value)
-  }
-  function submitSelection(e){
-    setSelection(e.target.value)
-  }
+  // newly added
+  const [queueList, setQueueList] = useState([]); // Stores submitted entries
 
   function submitForm(e) {
-    e.preventDefault(); // Prevents page reload
-    console.log(name,phone,selection)
+    e.preventDefault();
+
+    // newly added
+    const newEntry = { id: Date.now(), name, phone, selection };
+    setQueueList([...queueList, newEntry]); // Add new entry to list
+
+    setName("");
+    setPhone("");
+    setSelection("");
   }
 
   return (
     <div>
-      <form action="" onClick={submitForm}>
-        <label htmlFor="">Name</label>
-        <input type="text" onChange={submitName}/>
-        
-        <label htmlFor="">Phone Number</label>
-        <input type="text" onChange={submitPhone}/>
+      <h1>Queue Management</h1>
 
-        <label for="appointment">Selection:</label>
-          <select name="appointment" id="appointment" onChange={submitSelection}>
-            <option value="" disabled selected>Select an option</option>
-            <option value="Emergency">Emergency</option>
-            <option value="Appointment">Appointment</option>
-            <option value="Checkup">Checkup</option>
-          </select>
+      {/* Form */}
+      <form onSubmit={submitForm}>
+        <label>Name</label>
+        <input type="text" onChange={(e) => setName(e.target.value)} value={name} required />
+
+        <label>Phone Number</label>
+        <input type="number" onChange={(e) => setPhone(e.target.value)} value={phone} required />
+
+        <label>Selection:</label>
+        <select onChange={(e) => setSelection(e.target.value)} value={selection} required>
+          <option value="" disabled>Select an option</option>
+          <option value="Emergency">Emergency</option>
+          <option value="Appointment">Appointment</option>
+          <option value="Checkup">Checkup</option>
+        </select>
 
         <button type="submit">Submit</button>
       </form>
+
+      {/* newly added */}
+      {/* Table */}
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Selection</th>
+          </tr>
+        </thead>
+        <tbody>
+          {queueList.length === 0 ? (
+            <tr>
+              <td colSpan="3" style={{ textAlign: "center" }}>No data available</td>
+            </tr>
+          ) : (
+            queueList.map((entry) => (
+              <tr key={entry.id}>
+                <td>{entry.name}</td>
+                <td>{entry.phone}</td>
+                <td>{entry.selection}</td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
     </div>
-  )
+  );
 }
